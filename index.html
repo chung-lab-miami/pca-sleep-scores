@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCA Sleep Health Scores &amp; All-Cause Mortality | Joon Chung, PhD</title>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --accent: #2b6cb0;
+            --accent-light: #ebf4ff;
+            --success: #276749;
+            --success-light: #f0fff4;
+            --warning: #975a16;
+            --warning-light: #fffff0;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --bg: #f7fafc;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text);
+            line-height: 1.6;
+            background: var(--bg);
+        }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 40px 0;
+        }
+        header h1 { font-size: 2em; margin-bottom: 8px; }
+        header .subtitle { font-size: 1.1em; opacity: 0.9; margin-bottom: 16px; }
+        header .meta { font-size: 0.9em; opacity: 0.75; }
+        header .meta a { color: white; }
+
+        /* TL;DR Banner */
+        .tldr {
+            background: white;
+            border-left: 5px solid var(--accent);
+            padding: 24px;
+            margin: 24px 0;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .tldr h2 { color: var(--accent); margin-bottom: 12px; font-size: 1.3em; }
+        .tldr .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .tldr .item { }
+        .tldr .label { font-weight: 700; font-size: 0.85em; text-transform: uppercase; color: var(--text-light); }
+        .tldr .value { font-size: 1em; }
+        @media (max-width: 600px) { .tldr .grid { grid-template-columns: 1fr; } }
+
+        /* Skill Cards */
+        .skills { margin: 24px 0; }
+        .skills h2 { font-size: 1.4em; margin-bottom: 16px; color: var(--primary); }
+        .skill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        .skill-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-top: 3px solid var(--accent);
+        }
+        .skill-card h3 { font-size: 1.05em; margin-bottom: 8px; color: var(--primary); }
+        .skill-card p { font-size: 0.9em; color: var(--text-light); margin-bottom: 10px; }
+        .tag {
+            display: inline-block;
+            background: var(--accent-light);
+            color: var(--accent);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin: 2px 2px;
+            font-weight: 500;
+        }
+
+        /* Key Results */
+        .results {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .results h2 { color: var(--primary); margin-bottom: 16px; }
+        .result-highlight {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .result-box {
+            background: var(--accent-light);
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .result-box .number { font-size: 1.8em; font-weight: 700; color: var(--accent); }
+        .result-box .desc { font-size: 0.85em; color: var(--text-light); margin-top: 4px; }
+        @media (max-width: 600px) { .result-highlight { grid-template-columns: 1fr; } }
+
+        /* Section styling */
+        section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        section h2 { color: var(--primary); margin-bottom: 16px; font-size: 1.3em; }
+        section h3 { color: var(--accent); margin: 16px 0 8px; font-size: 1.1em; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.9em; }
+        th { background: var(--primary); color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+        td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+        tr:hover { background: var(--accent-light); }
+
+        /* Collapsible */
+        details { margin: 12px 0; }
+        summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--accent);
+            padding: 8px 0;
+            font-size: 1em;
+        }
+        summary:hover { color: var(--primary); }
+
+        /* Code blocks */
+        code {
+            background: #edf2f7;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.88em;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+        }
+        pre {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.85em;
+            line-height: 1.5;
+        }
+        pre code { background: none; padding: 0; color: inherit; }
+
+        /* Data flow diagram */
+        .flow-diagram {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 0.85em;
+            white-space: pre;
+            overflow-x: auto;
+            line-height: 1.4;
+        }
+
+        /* Status badges */
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        .badge-green { background: var(--success-light); color: var(--success); }
+        .badge-yellow { background: var(--warning-light); color: var(--warning); }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: white;
+            padding: 24px 0;
+            margin-top: 40px;
+            font-size: 0.9em;
+        }
+        footer a { color: #90cdf4; }
+
+        /* Issue list */
+        .issue {
+            padding: 12px 16px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border-left: 4px solid;
+        }
+        .issue-low { border-color: #38a169; background: #f0fff4; }
+        .issue-medium { border-color: #d69e2e; background: #fffff0; }
+        .issue-high { border-color: #e53e3e; background: #fff5f5; }
+        .issue .severity { font-weight: 700; font-size: 0.85em; text-transform: uppercase; }
+        .issue .desc { margin-top: 4px; font-size: 0.9em; }
+
+        /* C-statistic ranking table */
+        .c-stat-table td:nth-child(2),
+        .c-stat-table td:nth-child(3) { font-family: 'SF Mono', monospace; text-align: center; }
+        .c-stat-table th:nth-child(2),
+        .c-stat-table th:nth-child(3) { text-align: center; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <h1>PCA Sleep Health Scores &amp; All-Cause Mortality</h1>
+        <div class="subtitle">A Multidimensional Sleep Score Predicting Survival in the Multi-Ethnic Study of Atherosclerosis</div>
+        <div class="meta">
+            <strong>Joon Chung, PhD</strong> &mdash; University of Miami, Miller School of Medicine<br>
+            Originally conducted at Brigham and Women's Hospital / Harvard Medical School (2021&ndash;2022)<br>
+            Code Review generated February 2026
+        </div>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- TL;DR -->
+    <div class="tldr">
+        <h2>TL;DR</h2>
+        <div class="grid">
+            <div class="item">
+                <div class="label">Question</div>
+                <div class="value">Can a data-driven composite of 13 sleep metrics predict mortality better than any single metric?</div>
+            </div>
+            <div class="item">
+                <div class="label">Method</div>
+                <div class="value">PCA on 13 actigraphy + PSG + questionnaire variables (N = 1,726), Cox PH survival models</div>
+            </div>
+            <div class="item">
+                <div class="label">Result</div>
+                <div class="value">PC1 achieves highest C-statistic (0.617) among all sleep metrics; each SD increase associated with lower mortality risk</div>
+            </div>
+            <div class="item">
+                <div class="label">Robustness</div>
+                <div class="value">26-script pipeline: C-statistics, time-dependent AUC, R&sup2;, bootstrap validation, penalized splines, sensitivity analyses</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technical Skills -->
+    <div class="skills">
+        <h2>Technical Skills Demonstrated</h2>
+        <div class="skill-grid">
+            <div class="skill-card">
+                <h3>Dimensionality Reduction</h3>
+                <p>PCA on 13 multimodal sleep features; bootstrap stability validation; reduced-variable sensitivity PCA</p>
+                <span class="tag">PCA</span>
+                <span class="tag">prcomp</span>
+                <span class="tag">factoextra</span>
+                <span class="tag">Bootstrap</span>
+                <span class="tag">Eigenvalue analysis</span>
+            </div>
+            <div class="skill-card">
+                <h3>Survival Analysis</h3>
+                <p>Cox PH models with progressive covariate adjustment, penalized splines, age-as-time-metric sensitivity</p>
+                <span class="tag">Cox PH</span>
+                <span class="tag">Kaplan-Meier</span>
+                <span class="tag">pspline</span>
+                <span class="tag">cox.zph</span>
+                <span class="tag">survminer</span>
+            </div>
+            <div class="skill-card">
+                <h3>Predictive Model Evaluation</h3>
+                <p>Head-to-head C-statistics, time-dependent AUC curves, Cox R&sup2;, and discriminative accuracy across 15+ sleep metrics</p>
+                <span class="tag">C-statistic</span>
+                <span class="tag">Somers' D<sub>xy</sub></span>
+                <span class="tag">Time-dependent AUC</span>
+                <span class="tag">riskRegression</span>
+                <span class="tag">Cox R&sup2;</span>
+            </div>
+            <div class="skill-card">
+                <h3>Feature Engineering</h3>
+                <p>13 sleep indicators from actigraphy, PSG, and questionnaire data; AEHI-10 dietary composite with sex-specific scoring</p>
+                <span class="tag">Multi-source harmonization</span>
+                <span class="tag">AEHI-10</span>
+                <span class="tag">Circular variables</span>
+                <span class="tag">Clinical thresholds</span>
+            </div>
+            <div class="skill-card">
+                <h3>Programmatic Modeling</h3>
+                <p>Loop-based Cox regression over 13+ dichotomous and 14 continuous standardized predictors with automated forest plot generation</p>
+                <span class="tag">Parametric loops</span>
+                <span class="tag">Forest plots</span>
+                <span class="tag">gridExtra</span>
+                <span class="tag">ggplot2</span>
+            </div>
+            <div class="skill-card">
+                <h3>Data Engineering</h3>
+                <p>26-script reproducible pipeline merging 6 MESA exam waves, PSG, actigraphy, diet FFQ, mortality events, and non-CVD events</p>
+                <span class="tag">dplyr pipelines</span>
+                <span class="tag">Multi-wave merge</span>
+                <span class="tag">haven / foreign</span>
+                <span class="tag">labelled</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Results: C-Statistic Ranking -->
+    <section class="results">
+        <h2>Key Results: PC1 Outperforms Individual Sleep Metrics</h2>
+        <div class="result-highlight">
+            <div class="result-box">
+                <div class="number">0.617</div>
+                <div class="desc">PC1 C-statistic<br>(highest among all metrics)</div>
+            </div>
+            <div class="result-box">
+                <div class="number">13</div>
+                <div class="desc">Sleep variables from<br>actigraphy + PSG + survey</div>
+            </div>
+            <div class="result-box">
+                <div class="number">26</div>
+                <div class="desc">R scripts in the<br>analysis pipeline</div>
+            </div>
+        </div>
+
+        <h3>C-Statistic Ranking (Continuous Metrics)</h3>
+        <table class="c-stat-table">
+            <thead>
+                <tr><th>Sleep Metric</th><th>C-statistic</th><th>D<sub>xy</sub></th><th>p-value</th></tr>
+            </thead>
+            <tbody>
+                <tr style="background:#ebf4ff; font-weight:600"><td>PC1 (Sleep Health Score)</td><td>0.617</td><td>0.234</td><td>&lt;0.0001</td></tr>
+                <tr><td>% N3 (slow-wave sleep)</td><td>0.587</td><td>0.174</td><td>0.0001</td></tr>
+                <tr><td>% R (REM)</td><td>0.587</td><td>0.173</td><td>0.0001</td></tr>
+                <tr><td>SHS (sum of 13 indicators)</td><td>0.586</td><td>0.172</td><td>&lt;0.0001</td></tr>
+                <tr><td>Total sleep time</td><td>0.567</td><td>0.135</td><td>0.0072</td></tr>
+                <tr><td>ESS (sleepiness)</td><td>0.520</td><td>0.040</td><td>0.3718</td></tr>
+                <tr><td>Sleep maintenance efficiency</td><td>0.494</td><td>0.012</td><td>0.7996</td></tr>
+                <tr><td>Quality</td><td>0.493</td><td>0.015</td><td>0.7366</td></tr>
+                <tr><td>Timing variability</td><td>0.470</td><td>0.059</td><td>0.2115</td></tr>
+                <tr><td>Duration irregularity (SD)</td><td>0.439</td><td>0.122</td><td>0.0058</td></tr>
+                <tr><td>Midpoint irregularity</td><td>0.435</td><td>0.130</td><td>0.0040</td></tr>
+                <tr><td>Fragmentation</td><td>0.428</td><td>0.143</td><td>0.0013</td></tr>
+                <tr><td>AHI (sleep apnea)</td><td>0.417</td><td>0.167</td><td>0.0001</td></tr>
+                <tr><td>WASO</td><td>0.373</td><td>0.254</td><td>&lt;0.0001</td></tr>
+            </tbody>
+        </table>
+        <p style="font-size:0.85em; color:var(--text-light); margin-top:8px;">
+            Source: Script 17 &mdash; Harrell's <code>rcorrcens()</code> from the <code>Hmisc</code> package. N = 1,726.
+        </p>
+    </section>
+
+    <!-- Project Overview -->
+    <section>
+        <h2>Project Overview</h2>
+        <p>This project constructs a <strong>principal component analysis (PCA)</strong>-derived composite sleep health score
+        from 13 multimodal sleep indicators in the MESA cohort, then evaluates its ability to predict all-cause mortality
+        against each individual metric. The analysis spans data import through predictive model comparison using
+        C-statistics, time-dependent AUC, and Cox R&sup2;.</p>
+
+        <h3>Study Design</h3>
+        <table>
+            <tr><td><strong>Cohort</strong></td><td>Multi-Ethnic Study of Atherosclerosis (MESA), Exam 5 Sleep Study (2010&ndash;2012)</td></tr>
+            <tr><td><strong>Sample</strong></td><td>N = 1,726 with complete sleep + mortality data (171 deaths)</td></tr>
+            <tr><td><strong>Data sources</strong></td><td>Wrist actigraphy (7 days), polysomnography (PSG), Epworth Sleepiness Scale, sleep quality questionnaire</td></tr>
+            <tr><td><strong>PCA variables</strong></td><td>13: TST, SME, log(MPSD), ESS, quality, fragmentation, SWS%, REM%, AHI, WASO, SOL, SD(TST), log(timing)</td></tr>
+            <tr><td><strong>Outcome</strong></td><td>All-cause mortality through 2018 (~8 years follow-up)</td></tr>
+        </table>
+    </section>
+
+    <!-- Data Flow -->
+    <section>
+        <h2>Data Flow</h2>
+        <div class="flow-diagram">
+MESA Exam 1&ndash;6      PSG         Actigraphy     Sleep Q       Diet FFQ       Events
+(demographics)   (sleep arch)   (7-day wear)   (ESS, qual)   (AEHI-10)     (mortality)
+      |              |              |              |              |              |
+      +-------+------+--------------+--------------+------+-------+--------------+
+              |                                           |
+        [01: Import &amp; Clean]                     [03: Diet &amp; Covariates]
+              |                                           |
+        [02: Sleep Variables &amp; PCA]                       |
+              |                                           |
+        [04: Analytical Dataset (shs_df)]&lt;----------------+
+              |
+    +---------+---------+---------+---------+---------+
+    |         |         |         |         |         |
+ [05:Cox]  [06:Ind]  [07:PSM]  [08:Spline] ...   [26:Sens]
+    |         |         |         |
+ [17:C-stat] [18:AUC] [21:R2]  [22:LR]
+        </div>
+    </section>
+
+    <!-- Pipeline Scripts -->
+    <section>
+        <h2>Pipeline Scripts (26 scripts)</h2>
+
+        <h3>01 &mdash; Import &amp; Clean (199 lines)</h3>
+        <p>Merges 6 MESA exam waves with PSG, actigraphy, and sleep questionnaire data. Recodes demographics
+        (sex, age, race/ethnicity), socioeconomic variables (education in 4 tiers, income tertiles from 15-level categorical),
+        depressive symptoms (CES-D minus sleep item), smoking status, physical activity, and BMI.</p>
+        <p><span class="badge badge-green">Intact</span></p>
+
+        <h3>02 &mdash; Sleep Variables &amp; PCA Construction (305 lines)</h3>
+        <p><strong>Core PCA implementation.</strong> Constructs 13 sleep indicators from actigraphy (TST, SME, fragmentation, MPSD, SDTST),
+        PSG (SWS%, REM%, AHI, WASO), and questionnaire (ESS, quality, SOL) data. Dichotomizes each at clinical thresholds
+        (e.g., TST 6&ndash;8 hrs, SME &gt;90%, AHI &le;15). Handles circular timing variable (midpoint &gt;1440 min wraps around midnight).
+        Runs PCA via <code>prcomp(scale(pr_df[,1:13]*-1))</code> &mdash; the <code>*-1</code> ensures higher PC1 = better sleep health.
+        Extracts eigenvalues, variable loadings, and individual PC1 scores. Also constructs the raw SHS (sum of 13 dichotomous indicators)
+        and computes mortality event timing from Exam 1.</p>
+        <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+        <h3>03 &mdash; Diet &amp; Covariates (181 lines)</h3>
+        <p>Implements the Alternative Healthy Eating Index (AEHI-10) from MESA FFQ and nutrient data.
+        Scores 10 sex-specific components: vegetables, fruit, whole grains, legumes, meat, trans fat,
+        long-chain omega-3, PUFA, sodium, and alcohol. Each scored 0&ndash;10 with sex-specific thresholds for grains and alcohol.
+        Also adds medical history (emphysema).</p>
+        <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+        <h3>04 &mdash; Analytical Dataset Assembly (139 lines)</h3>
+        <p>Merges sleep variables, diet scores, and mortality events into <code>shs_df</code> (N = 1,726).
+        Computes follow-up time in years, prevalent disease indicators (CVD, cancer, COPD based on event timing
+        relative to sleep exam), standardized SHS, and applies variable labels via <code>labelled</code> package.</p>
+        <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+        <h3>05 &mdash; Cox PH Models (162 lines)</h3>
+        <p>Primary survival analysis. Fits nested Cox models with progressive adjustment:
+        Model 0 (sociodemographic + interaction with sex), Model 1 (+ lifestyle + diet), Model 2 (+ BMI + prevalent CVD).
+        Tests proportional hazards assumption (<code>cox.zph</code>: global p = 0.272).
+        Tests non-linearity with penalized splines (df=3) and quadratic terms.
+        Sensitivity analysis: excludes deaths within 1 year of sleep exam (18 deaths).</p>
+        <p><span class="badge badge-green">Intact</span></p>
+
+        <h3>06 &mdash; Individual Metric Regressions (316 lines)</h3>
+        <p>Programmatic loop-based Cox regression: iterates over 13 dichotomous and 14 continuous (z-scored) sleep predictors.
+        Extracts hazard ratios and 95% CIs. Generates forest plots for both dichotomous and standardized metrics.
+        Reverse-codes unfavorable metrics so all HRs are interpretable in the same direction.</p>
+        <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+        <details>
+            <summary>Scripts 07&ndash;14: Tables, Figures, Sensitivity</summary>
+
+            <h3>07 &mdash; Propensity Score Matching (342 lines)</h3>
+            <p>Full matching with probit link for cluster-based PSM. Five balance specifications
+            from parsimonious to kitchen-sink (36 covariates). Love plots for covariate balance.</p>
+            <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+            <h3>07 &mdash; Mortality Tables (87 lines)</h3>
+            <p>TableOne descriptive statistics for the analytical sample overall and stratified by sleep health.</p>
+            <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+            <h3>08 &mdash; Spline-Modeled Individual Variables (71 lines)</h3>
+            <p>Penalized spline models for each continuous sleep metric to check for non-linear dose-response.</p>
+            <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+            <h3>09 &mdash; Tables &amp; Figures (72 lines)</h3>
+            <p>Publication-quality tables and figures for the manuscript.</p>
+            <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+            <h3>10 &mdash; Survival Plots (71 lines) + Final Tables/Figures (42 lines)</h3>
+            <p>Kaplan-Meier survival curves and finalized publication outputs.</p>
+            <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+            <h3>11 &mdash; Score Tertile Supplement (116 lines)</h3>
+            <p>Supplementary analysis splitting PC1 into tertiles for dose-response visualization.</p>
+            <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+            <h3>12 &mdash; Sensitivity: Exclude Early Deaths (129 lines)</h3>
+            <p>Reverse causation test: recodes 18 deaths within 1 year as alive. Re-runs Cox models.</p>
+            <p><span class="badge badge-green">Intact</span></p>
+
+            <h3>13 &mdash; New Scores (169 lines)</h3>
+            <p>Alternative composite score constructions for sensitivity testing.</p>
+            <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+            <h3>14 &mdash; Additional Covariates (62 lines)</h3>
+            <p>Adds cancer and total medication count as additional covariates.</p>
+            <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+        </details>
+
+        <details>
+            <summary>Scripts 15&ndash;22: Predictive Model Comparison</summary>
+
+            <h3>15 &mdash; Random Forests (0 lines)</h3>
+            <p>Placeholder/empty script for random forest analysis. Not implemented in final pipeline.</p>
+
+            <h3>16 &mdash; PC1 Ranked (36 lines)</h3>
+            <p>Rank-normalizes PC1 scores and fits Cox models on rank-transformed predictor. Tests robustness
+            to distributional assumptions using <code>rank.normalize()</code>.</p>
+            <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+            <h3>17 &mdash; C-Statistics (582 lines)</h3>
+            <p><strong>Key discriminative accuracy script.</strong> Uses Harrell's <code>rcorrcens()</code> for Somers' D<sub>xy</sub>
+            and C-statistics across all 14 continuous and 13 dichotomous sleep metrics. Builds head-to-head comparisons:
+            PC1 (C = 0.617) vs. SHS (C = 0.586) vs. individual metrics. Time-dependent AUC via <code>riskRegression::Score()</code>
+            across 1&ndash;8 year horizons. Includes metric-by-metric AUC comparisons (TST, REM, MPSD, SDTST, SWS, WASO, clusters)
+            with publication-quality ROC plots.</p>
+            <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+            <h3>18 &mdash; Time-Dependent AUC (466 lines)</h3>
+            <p>Comprehensive AUC analysis using <code>riskRegression::Score()</code>. Compares base model
+            (age + sex + race + BMI) against models adding PC1, SHS, or individual metrics.
+            Plots AUC trajectories at yearly intervals. Both continuous and dichotomous versions.</p>
+            <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+            <h3>19 &mdash; Ranger C-Statistic (1 line)</h3>
+            <p>Placeholder for random survival forest C-statistic. Not implemented.</p>
+
+            <h3>20 &mdash; Integrated AUC (81 lines)</h3>
+            <p>Integrated Prediction Accuracy (IPA) computation for model comparison at multiple time horizons
+            (500&ndash;3000 days).</p>
+            <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+            <h3>21 &mdash; Cox R&sup2; (69 lines)</h3>
+            <p>Measures explained variation (R&sup2;) for each sleep metric's Cox model using <code>survMisc::rsq()</code>.
+            Computes MEV, MER, and coefficient of determination for all 15 continuous and 8 dichotomous predictors.
+            Exports ranked R&sup2; table.</p>
+            <p><span class="badge badge-green">Intact</span></p>
+
+            <h3>22 &mdash; Likelihood Ratio Tests (108 lines)</h3>
+            <p>Formal LR tests comparing nested models (base vs. base + sleep metric) for statistical significance
+            of each predictor's contribution.</p>
+            <p><span class="badge badge-green">Intact</span></p>
+        </details>
+
+        <details>
+            <summary>Scripts 23&ndash;26: Additional Sensitivity &amp; Validation</summary>
+
+            <h3>23 &mdash; Sensitivity Analyses (90 lines)</h3>
+            <p>Additional robustness checks beyond the primary analysis.</p>
+            <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+            <h3>24 &mdash; Cox Predictions (39 lines)</h3>
+            <p>Predicted survival probabilities from Cox models.</p>
+            <p><span class="badge badge-green">Intact</span></p>
+
+            <h3>25 &mdash; Reduced Data-Mined PC Score (63 lines)</h3>
+            <p>Sensitivity PCA on a <strong>reduced set of 7 objective variables</strong> (TST, SME, log_MPSD, fragmentation,
+            AHI, WASO, SDTST) &mdash; removes subjective measures. Tests whether a purely device-derived composite
+            retains predictive validity. Includes Dim.2 and Dim.3 as additional predictors in Cox models.</p>
+            <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+            <h3>26 &mdash; Review Sensitivity (82 lines)</h3>
+            <p>Additional analyses requested during peer review.</p>
+            <p><span class="badge badge-green">Intact</span></p>
+        </details>
+
+        <details>
+            <summary>Standalone Scripts</summary>
+
+            <h3>Chung &mdash; MESA Sleep Scores (PCA).R (57 lines)</h3>
+            <p>Standalone version of the PCA extraction code. Subset 13 sleep variables, run <code>prcomp()</code> with
+            reverse scoring, extract PC1&ndash;PC3, merge back to analytical dataset.</p>
+            <p><span class="badge badge-green">Intact (recovered from backup)</span></p>
+
+            <h3>22 &mdash; MESA PCA Bootstrap Validation (23 lines)</h3>
+            <p>Bootstrap resampling (n = 1,740 with replacement) to assess PCA stability across samples.
+            Re-runs <code>prcomp()</code> on bootstrapped data, visualizes eigenvalues and variable contributions.</p>
+            <p><span class="badge badge-green">Intact</span></p>
+        </details>
+    </section>
+
+    <!-- Methods -->
+    <section>
+        <h2>Methods Summary</h2>
+        <details>
+            <summary>PCA Construction</summary>
+            <ul>
+                <li><strong>Input:</strong> 13 sleep variables scaled to z-scores, multiplied by &ndash;1 (so higher = better)</li>
+                <li><strong>Method:</strong> <code>prcomp()</code> (singular value decomposition)</li>
+                <li><strong>PC1 interpretation:</strong> Overall sleep quality/consolidation factor (~35&ndash;40% variance explained)</li>
+                <li><strong>Strongest PC1 loadings:</strong> Fragmentation (&ndash;0.44), SME (+0.41), TST (+0.33), AHI (&ndash;0.32), WASO (&ndash;0.32)</li>
+                <li><strong>Validation:</strong> Bootstrap resampling (1,740 iterations), reduced-variable sensitivity (7 objective metrics only)</li>
+            </ul>
+        </details>
+        <details>
+            <summary>Cox Proportional Hazards Models</summary>
+            <ul>
+                <li><strong>Outcome:</strong> <code>Surv(dthtt - slpexam1, death)</code></li>
+                <li><strong>Progressive adjustment:</strong> Sociodemographic &rarr; + Lifestyle + Diet &rarr; + BMI + Prevalent CVD</li>
+                <li><strong>Assumption testing:</strong> Schoenfeld residuals (global p = 0.272), penalized splines (non-linear p = 0.55)</li>
+                <li><strong>Sensitivity:</strong> Reverse causation (exclude deaths &lt;1 year), rank-normalized PC1</li>
+            </ul>
+        </details>
+        <details>
+            <summary>Predictive Model Comparison</summary>
+            <ul>
+                <li><strong>C-statistic:</strong> Harrell's <code>rcorrcens()</code> &mdash; Somers' D<sub>xy</sub> concordance</li>
+                <li><strong>Time-dependent AUC:</strong> <code>riskRegression::Score()</code> at 1&ndash;8 year horizons</li>
+                <li><strong>Cox R&sup2;:</strong> <code>survMisc::rsq()</code> &mdash; MEV, MER, coefficient of determination</li>
+                <li><strong>LR tests:</strong> Nested model comparison (base vs. base + sleep predictor)</li>
+                <li><strong>Integrated Prediction Accuracy (IPA):</strong> 500&ndash;3000 day horizons</li>
+            </ul>
+        </details>
+    </section>
+
+    <!-- Packages -->
+    <section>
+        <h2>R Packages Used</h2>
+        <details>
+            <summary>Full package list</summary>
+            <table>
+                <thead><tr><th>Package</th><th>Purpose</th></tr></thead>
+                <tbody>
+                    <tr><td><code>survival</code></td><td>Cox PH models, Surv objects, cox.zph</td></tr>
+                    <tr><td><code>survminer</code></td><td>Kaplan-Meier plots, ggsurvplot</td></tr>
+                    <tr><td><code>survMisc</code></td><td>Cox R&sup2; (rsq function)</td></tr>
+                    <tr><td><code>riskRegression</code></td><td>Time-dependent AUC, Score(), plotROC</td></tr>
+                    <tr><td><code>rms</code></td><td>Harrell regression modeling, rcorrcens</td></tr>
+                    <tr><td><code>Hmisc</code></td><td>C-statistics, Somers' D<sub>xy</sub></td></tr>
+                    <tr><td><code>prodlim</code></td><td>Product-limit estimation</td></tr>
+                    <tr><td><code>factoextra</code></td><td>PCA visualization (eigenvalues, biplots)</td></tr>
+                    <tr><td><code>FactoMineR</code></td><td>PCA computation and extraction</td></tr>
+                    <tr><td><code>tableone</code></td><td>Descriptive statistics (Table 1)</td></tr>
+                    <tr><td><code>dplyr</code> / <code>tidyverse</code></td><td>Data wrangling pipelines</td></tr>
+                    <tr><td><code>ggplot2</code></td><td>Publication-quality figures</td></tr>
+                    <tr><td><code>gridExtra</code></td><td>Multi-panel figure layouts</td></tr>
+                    <tr><td><code>haven</code> / <code>foreign</code></td><td>Stata .dta file import</td></tr>
+                    <tr><td><code>labelled</code></td><td>Variable label management</td></tr>
+                    <tr><td><code>mosaic</code></td><td>favstats() summary statistics</td></tr>
+                    <tr><td><code>hms</code></td><td>Time-of-day variable handling</td></tr>
+                </tbody>
+            </table>
+        </details>
+    </section>
+
+    <!-- Code Review Issues -->
+    <section>
+        <h2>Code Review Notes</h2>
+        <details>
+            <summary>View issues identified during review</summary>
+
+            <div class="issue issue-low">
+                <div class="severity">Low &mdash; Hardcoded Paths</div>
+                <div class="desc">Scripts use absolute Windows paths (<code>C:/Users/jj261/Dropbox (Partners HealthCare)/...</code>).
+                Standard for the era; a modern version would use <code>here::here()</code> or config files.</div>
+            </div>
+
+            <div class="issue issue-low">
+                <div class="severity">Low &mdash; Magic Numbers</div>
+                <div class="desc">Clinical thresholds (TST 360&ndash;480 min, SME &gt;90%, AHI &le;15) are inline rather than in a config.
+                All thresholds are sourced from published guidelines (NSF, AASM) and documented in comments.</div>
+            </div>
+
+            <div class="issue issue-low">
+                <div class="severity">Low &mdash; Script 15 (Random Forests) Empty</div>
+                <div class="desc">Placeholder script with 0 lines. Planned ML extension was not implemented in the final pipeline.</div>
+            </div>
+
+            <div class="issue issue-low">
+                <div class="severity">Low &mdash; Duplicate Script Numbers</div>
+                <div class="desc">Two scripts numbered "07" (PSM and Tables) and two numbered "10" (Survival plots and Final tables).
+                Non-breaking but could cause confusion.</div>
+            </div>
+
+            <div class="issue issue-medium">
+                <div class="severity">Medium &mdash; set.seed Placement</div>
+                <div class="desc"><code>set.seed(8675309)</code> appears in script 02 but not consistently across all scripts
+                that involve stochastic operations (bootstrap, resampling). Reproducibility is maintained within sessions
+                but could diverge across runs.</div>
+            </div>
+
+            <div class="issue issue-low">
+                <div class="severity">Low &mdash; File Corruption in Working Copy</div>
+                <div class="desc">16 of 26 scripts in the primary working copy were corrupted (null bytes).
+                All were successfully recovered from Samsung T7 backup. This repository contains the intact versions.</div>
+            </div>
+        </details>
+    </section>
+
+</div>
+
+<footer>
+    <div class="container">
+        <strong>Joon Chung, PhD</strong> &mdash; University of Miami, Miller School of Medicine<br>
+        Originally conducted at Brigham and Women's Hospital / Harvard Medical School (2021&ndash;2022)<br>
+        <a href="https://github.com/chung-lab-miami">github.com/chung-lab-miami</a>
+    </div>
+</footer>
+
+</body>
+</html>
