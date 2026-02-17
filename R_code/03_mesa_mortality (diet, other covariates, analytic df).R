@@ -1,5 +1,5 @@
 ## Joon Chung
-## jchung26@bwh.harvard.edu
+## Contact: see README
 ## 01/17/2022
 
 ## Add diet code + prevalent outcomes
@@ -23,7 +23,7 @@ library(haven)
 library(tidyverse)
 library(ggplot2)
 
-setwd("/Users/jj261/Dropbox (Partners HealthCare)/MESA/MESA/MESAe5_IndividualDomains_20190823")
+setwd("<MESA_DATA_DIR>/MESAe5_IndividualDomains")
 ## Folders within:
 ## MESA_Exam5_Diet_FFQ/MESAe5_FFQ_20150928.dta
 ## MESA_Exam5_Diet_Nutrients/MESAe5_Nutrient_20150331.dta
@@ -167,7 +167,7 @@ aehi_df <- mesa_diet %>% dplyr::select(aehi_10, idno,
                                        longchainscore, pufascore, sodiumscore,
                                        alcoholscore)
 
-medhx_df <- read_dta("C:/Users/jj261/Dropbox (Partners HealthCare)/MESA/MESA/MESAe5_IndividualDomains_20190823/MESAe5_IndividualDomains_20190823/MESA_Exam5_MedicalHx/MESAe5_MedHx_20130625.dta")
+medhx_df <- read_dta("<MESA_DATA_DIR>/MESAe5_IndividualDomains/MESA_Exam5_MedicalHx/MESAe5_MedHx.dta")
 medhx_df$emphys_f <- medhx_df$emphys5
 medhx_df$emphys_f[medhx_df$emphys5 ==9] <- NA 
 
@@ -175,7 +175,7 @@ emphys_df <- medhx_df %>%
   dplyr::select(emphys_f, idno) 
 
 ## Back to mortality dropbox
-setwd("/Users/jj261/Dropbox (Partners HealthCare)/2021_mesa_mortality")
+setwd("<PROJECT_DIR>")
 
 ## End script
 

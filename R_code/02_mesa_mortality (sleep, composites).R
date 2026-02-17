@@ -274,7 +274,7 @@ TukeyHSD(aov_mod_shs)
 ## Events code
 
 ## Joon Chung
-## jchung26@bwh.harvard.edu
+## Contact: see README
 
 # From Tianyi:
 # slpexam5=stdyady5c; /*days of actigraphy relative to exam 5*/
@@ -283,7 +283,7 @@ TukeyHSD(aov_mod_shs)
 #       
 
 library(haven)
-mesa_events <- read_dta("C:/Users/jj261/Dropbox (Partners HealthCare)/MESAEvThru2018_20210518/MESAEvThru2018_20210518.dta")
+mesa_events <- read_dta("<MESA_DATA_DIR>/MESAEvThru2018.dta")
 
 mesa_df$slpexam5 <- mesa_df$stdyady5c
 which(is.na(mesa_df$slpexam5))
@@ -295,7 +295,7 @@ mesa_df$slpexam1 <- mesa_df$slpexam5 + mesa_df$e15dyc # Days of sleep study rela
 # mortality_df <- merge(mesa_df, mesa_events, by = "idno")
 
 ## Non cvd events (cancer, copd)
-MESANonCVDEvThru2018_20210517 <- read_dta("C:/Users/jj261/Dropbox (Partners HealthCare)/MESANonCVDEvThru2018_20210517/MESANonCVDEvThru2018_20210517.dta")
+MESANonCVDEvThru2018_20210517 <- read_dta("<MESA_DATA_DIR>/MESANonCVDEvThru2018.dta")
 mesa_noncvd_df <- MESANonCVDEvThru2018_20210517
 
 mesa_cvd_events <- mesa_events %>% dplyr::select(cvda, cvdatt, idno, dth, dthtt)

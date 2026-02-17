@@ -52,7 +52,7 @@ sme_di     0.492 -0.017 0.017 0.035 0.48 0.6301 1726
 ess_di     0.488 -0.025 0.025 0.024 1.02 0.3083 1726
 
 # # Import cstat csv
-# c_statistic. <- read.csv("C:/Users/jj261/Dropbox (Partners HealthCare)/2021_mesa_mortality/c_statistic .csv")
+# c_statistic. <- read.csv("C:<PROJECT_DIR>/c_statistic .csv")
 # cstat_df <- c_statistic.
 # 
 # cstat_df_cont <- cstat_df %>% dplyr::filter(Type=="continuous")

@@ -1,5 +1,5 @@
 ## Joon Chung
-## jchung26@bwh.harvard.edu
+## Contact: see README
 ## 01/17/2022
 
 ## 3 data-frames: 1) mesa_df (socio, lifestyle, sleep)
@@ -125,7 +125,7 @@ table(shs_df$death)
 # 0     1 
 # 1555  171 
 
-# sleep_scores <- read.csv("C:/Users/jj261/Dropbox (Partners HealthCare)/2021_mesa_mortality/2022_final_code/sleep_scores.csv")
+# sleep_scores <- read.csv("C:<PROJECT_DIR>/2022_final_code/sleep_scores.csv")
 
 sleep_scores_df <- sleep_scores %>% dplyr::select(pc1_scaled, idno)
 shs_df <- shs_df %>% dplyr::select(-pc1_scaled)
@@ -133,7 +133,7 @@ shs_df <- shs_df %>% dplyr::select(-pc1_scaled)
 shs_df <- merge(shs_df, sleep_scores_df, by = "idno")
 
 ## Back to mortality dropbox
-setwd("/Users/jj261/Dropbox (Partners HealthCare)/2021_mesa_mortality")
+setwd("<PROJECT_DIR>")
 
 ## End script
 
