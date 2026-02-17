@@ -6,7 +6,8 @@ A data-driven composite sleep health score (PCA on 13 multimodal sleep indicator
 
 ## Key Findings
 
-- PCA-derived PC1 achieves **highest C-statistic (0.617)** among all 14 sleep metrics tested
+- PCA-derived PC1 (19.75% variance) achieves **highest C-statistic (0.617)** among all 14 sleep metrics tested
+- **25% lower mortality per SD** (HR = 0.75, 95% CI: 0.65–0.87)
 - Outperforms both the raw sum score (SHS: C = 0.586) and every individual metric
 - Proportional hazards assumption met (global p = 0.272); linear dose-response confirmed
 
@@ -36,9 +37,13 @@ A data-driven composite sleep health score (PCA on 13 multimodal sleep indicator
 └── README.md
 ```
 
-## Publication
+## Publications
 
-Chung J, et al. (2022). Multidimensional sleep health and all-cause mortality in the Multi-Ethnic Study of Atherosclerosis. *Sleep*.
+**Primary:** Chung J, Goodman M, Huang T, Wallace ML, Lutsey PL, Chen JT, Castro-Diehl C, Bertisch S, Redline S. Multi-dimensional sleep and mortality: The Multi-Ethnic Study of Atherosclerosis. *SLEEP*. 2023;46(9):zsad048. [doi:10.1093/sleep/zsad048](https://doi.org/10.1093/sleep/zsad048)
+
+**Conceptual framework:** Chung J, Goodman M, Huang T, Bertisch S, Redline S. Multidimensional sleep health in a diverse, aging adult cohort. *Sleep Health*. 2021;7(6):699–707. [doi:10.1016/j.sleh.2021.08.005](https://doi.org/10.1016/j.sleh.2021.08.005)
+
+**Racial disparities:** Chung J, Goodman M, Huang T, Wallace ML, Johnson DA, Bertisch S, Redline S. Racial/Ethnic Differences in Indicators of Healthy Sleep. *Am J Epidemiol*. 2024;193(1):107–120. [doi:10.1093/aje/kwab232](https://doi.org/10.1093/aje/kwab232)
 
 ## Author
 

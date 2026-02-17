@@ -235,7 +235,7 @@
             </div>
             <div class="item">
                 <div class="label">Result</div>
-                <div class="value">PC1 achieves highest C-statistic (0.617) among all sleep metrics; each SD increase associated with lower mortality risk</div>
+                <div class="value">PC1 (19.75% variance) predicts <strong>25% lower mortality per SD</strong> (HR = 0.75, 95% CI: 0.65&ndash;0.87); highest C-statistic (0.617) among all metrics</div>
             </div>
             <div class="item">
                 <div class="label">Robustness</div>
@@ -565,7 +565,7 @@ MESA Exam 1&ndash;6      PSG         Actigraphy     Sleep Q       Diet FFQ      
             <ul>
                 <li><strong>Input:</strong> 13 sleep variables scaled to z-scores, multiplied by &ndash;1 (so higher = better)</li>
                 <li><strong>Method:</strong> <code>prcomp()</code> (singular value decomposition)</li>
-                <li><strong>PC1 interpretation:</strong> Overall sleep quality/consolidation factor (~35&ndash;40% variance explained)</li>
+                <li><strong>PC1 interpretation:</strong> Overall sleep quality/consolidation factor (19.75% variance explained)</li>
                 <li><strong>Strongest PC1 loadings:</strong> Fragmentation (&ndash;0.44), SME (+0.41), TST (+0.33), AHI (&ndash;0.32), WASO (&ndash;0.32)</li>
                 <li><strong>Validation:</strong> Bootstrap resampling (1,740 iterations), reduced-variable sensitivity (7 objective metrics only)</li>
             </ul>
@@ -619,6 +619,31 @@ MESA Exam 1&ndash;6      PSG         Actigraphy     Sleep Q       Diet FFQ      
                 </tbody>
             </table>
         </details>
+    </section>
+
+    <!-- Publications -->
+    <section>
+        <h2>Publications</h2>
+        <table>
+            <thead><tr><th>Paper</th><th>Journal</th><th>DOI</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><strong>Primary:</strong> Chung J, Goodman M, Huang T, Wallace ML, Lutsey PL, Chen JT, Castro-Diehl C, Bertisch S, Redline S. Multi-dimensional sleep and mortality: The Multi-Ethnic Study of Atherosclerosis. <em>SLEEP</em>. 2023;46(9):zsad048.</td>
+                    <td><em>SLEEP</em></td>
+                    <td><a href="https://doi.org/10.1093/sleep/zsad048" target="_blank">10.1093/sleep/zsad048</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Conceptual framework:</strong> Chung J, Goodman M, Huang T, Bertisch S, Redline S. Multidimensional sleep health in a diverse, aging adult cohort: Concepts, advances, and implications for research and intervention. <em>Sleep Health</em>. 2021;7(6):699&ndash;707.</td>
+                    <td><em>Sleep Health</em></td>
+                    <td><a href="https://doi.org/10.1016/j.sleh.2021.08.005" target="_blank">10.1016/j.sleh.2021.08.005</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Racial disparities:</strong> Chung J, Goodman M, Huang T, Wallace ML, Johnson DA, Bertisch S, Redline S. Racial/Ethnic Differences in Actigraphy, Questionnaire, and Polysomnography Indicators of Healthy Sleep. <em>Am J Epidemiol</em>. 2024;193(1):107&ndash;120.</td>
+                    <td><em>Am J Epidemiol</em></td>
+                    <td><a href="https://doi.org/10.1093/aje/kwab232" target="_blank">10.1093/aje/kwab232</a></td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 
     <!-- Code Review Issues -->
