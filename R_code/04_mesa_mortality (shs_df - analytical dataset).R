@@ -132,7 +132,7 @@ shs_df <- shs_df %>% dplyr::select(-pc1_scaled)
 
 shs_df <- merge(shs_df, sleep_scores_df, by = "idno")
 
-## Back to mortality dropbox
+## Back to project directory
 setwd("<PROJECT_DIR>")
 
 ## End script

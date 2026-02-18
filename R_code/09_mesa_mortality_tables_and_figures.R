@@ -50,7 +50,7 @@ termplot(pc1_model_1_spline, term=1, se=TRUE, col.term=1, col.se=1, rug = T,
          ylab = "Log hazard, df=3")
 dev.off()
 
-## Individual spline-modeled looped, in dropbox
+## Individual spline-modeled looped
 ## Figure 2c: Total sleep time (spline modeled)
 ## Figure 2d: Midpoint irregularity (log; spline modeled)
 ## Figure 2e: Duration irregularity (spline modeled)

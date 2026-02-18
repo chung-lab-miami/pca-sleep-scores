@@ -1,7 +1,7 @@
 ## Joon Chung
 
 ## Joon Chung
-## Brigham and Women's Hospital, Harvard Medical School
+## University of Miami, Miller School of Medicine
 ## Contact: see README
 ## See README for author information
 

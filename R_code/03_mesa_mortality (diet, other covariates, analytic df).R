@@ -174,7 +174,7 @@ medhx_df$emphys_f[medhx_df$emphys5 ==9] <- NA
 emphys_df <- medhx_df %>% 
   dplyr::select(emphys_f, idno) 
 
-## Back to mortality dropbox
+## Back to project directory
 setwd("<PROJECT_DIR>")
 
 ## End script
